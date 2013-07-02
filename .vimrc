@@ -6,7 +6,7 @@ set nocompatible
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
-set history=50  	" keep 50 lines of command line history
+set history=50		" keep 50 lines of command line history
 set ruler		" show the cursor position all the time
 set showcmd		" display incomplete commands
 set incsearch		" do incremental searching
@@ -18,6 +18,8 @@ set laststatus=2        " always show status line
 set shiftwidth=4        " spaces for [auto]indent
 set softtabstop=4       " spaces 1 tab equals
 set expandtab           " expand those filthy tabs into proper spaces
+set ignorecase          " case insensitivity in searches
+set smartcase           " ... unless it looks like I don't want that
 
 " Useful modeline containing filetype, encoding, etc.
 set statusline=%t[%{strlen(&fenc)?&fenc:'none'},%{&ff}]%h%m%r%y%=%c,%l/%L\ %P
