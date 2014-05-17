@@ -1,0 +1,12 @@
+# Controls
+OPTIONS=number_pad
+
+# Pets
+OPTIONS=pettype:c
+
+# Pickups
+OPTIONS=pickup_burden:unencumbered, pickup_types:"*=+()[$!?/
+
+# Display
+OPTIONS=color, runmode:walk, time
+

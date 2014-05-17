@@ -1,0 +1,7 @@
+[user]
+	name = Anthony Garcia
+	email = anthony@lagg.me
+[color]
+	ui = auto
+[push]
+	default = simple
