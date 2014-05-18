@@ -7,3 +7,7 @@
 	default = simple
 [apply]
 	whitespace = fix
+[alias]
+	l = log --decorate --graph --all --pretty --notes
+	d = diff --minimal
+	dc = diff --minimal --cached
