@@ -16,10 +16,10 @@ bindkey -e
 autoload -U promptinit
 promptinit
 
-alias ps="ps -H"
 alias ls="ls --all --color=always"
 alias pstree="pstree -p -l"
 alias less="less -R"
+alias htop="env TERM=xterm htop"
 
 export PAGER="less"
 export PATH="$PATH:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin:/usr/local/games:/usr/games"
@@ -27,5 +27,5 @@ export MANPATH="$MANPATH:/usr/local/man:/usr/local/share/man"
 export EDITOR="vim"
 export VISUAL="$EDITOR"
 export BROWSER="w3m"
-export TERM="rxvt"
 export GPG_TTY=$(tty)
+export TERM=xterm-256color
