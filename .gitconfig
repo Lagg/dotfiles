@@ -5,3 +5,5 @@
 	ui = auto
 [push]
 	default = simple
+[apply]
+	whitespace = fix
