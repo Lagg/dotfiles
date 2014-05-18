@@ -1,0 +1,142 @@
+#!/usr/bin/env python
+
+import os
+import stat
+import argparse
+import subprocess
+
+home = os.path.expanduser('~')
+cwd = os.getcwd()
+
+parser = argparse.ArgumentParser()
+subparsers = parser.add_subparsers(title="subcommands")
+
+def get_dotfiles():
+    """ Returns a list of currently tracked dotfile paths """
+    files = set()
+
+    for line in subprocess.check_output(["git", "ls-files", "-co"]).decode("utf-8").split('\n'):
+        fname = line.strip()
+
+        if not fname:
+            continue
+
+        if not fname.startswith('.') or (fname.startswith(".git") and fname != ".gitconfig"):
+            continue
+
+        # Only interested in top level dirs
+        dirname = os.path.dirname(fname)
+        if dirname:
+            fname = dirname
+
+        files.add(fname)
+
+    return sorted(files)
+
+def sync(args):
+    subprocess.call(["git", "pull"], stdout=subprocess.DEVNULL)
+    files = get_dotfiles()
+
+    for fname in files:
+        homelink = os.path.join(home, fname)
+        symlinked = os.path.islink(homelink)
+        fname = os.path.realpath(fname)
+
+        if not symlinked and os.path.exists(homelink):
+            print("Not a symlink, skipping: " + homelink)
+        elif not symlinked:
+            os.symlink(fname, homelink)
+            print("ln -s '{0}' '{1}'".format(fname, homelink))
+
+def add(args):
+    for fn in args.filename:
+        if not os.path.exists(fn):
+            print("No such file: " + fn)
+            return
+
+        realfn = os.path.realpath(fn)
+        dotfn = os.path.join(cwd, os.path.basename(fn))
+
+        if os.path.exists(dotfn):
+            return
+
+        os.rename(realfn, dotfn)
+
+        if os.path.exists(fn):
+            os.unlink(fn)
+
+        os.symlink(dotfn, fn)
+
+        subprocess.call(["git", "add", dotfn])
+
+        print("ln -s '{0}' '{1}'".format(dotfn, fn))
+
+def rm(args):
+    for df in args.filename:
+        dfbase = os.path.basename(df)
+        dfpath = os.path.join(cwd, dfbase)
+
+        if os.path.islink(df):
+            homelink = df
+        else:
+            homelink = os.path.join(home, dfbase)
+
+        if not os.path.exists(dfpath):
+            print("No such dotfile: " + dfpath)
+            return
+
+        if os.path.exists(homelink) and not os.path.islink(homelink):
+            print("This isn't a symlink: " + homelink)
+            return
+
+        if os.path.exists(homelink):
+            os.unlink(homelink)
+
+        gitrmopts = ["-q", "--ignore-unmatch"]
+        if os.path.isdir(dfpath):
+            gitrmopts.append("-r")
+
+        os.rename(dfpath, homelink)
+
+        subprocess.call(["git", "rm"] + gitrmopts + [dfpath])
+
+        print("mv '" + dfpath + "' '" + homelink + "'")
+
+def ls(args):
+    files = get_dotfiles()
+
+    for fname in files:
+        homelink = os.path.join(home, fname)
+
+        if os.path.islink(homelink):
+            print("L " + fname)
+        elif not os.path.exists(homelink):
+            print("D " + fname)
+        else:
+            print("U " + fname)
+
+sync_parser = subparsers.add_parser("sync", help="Synchronize repo and links")
+sync_parser.set_defaults(func=sync)
+
+add_parser = subparsers.add_parser("add", help="Add new dotfile for tracking")
+add_parser.add_argument("filename", nargs='+', help="The target file")
+add_parser.set_defaults(func=add)
+
+rm_parser = subparsers.add_parser("rm", help="Remove dotfile from tracking")
+rm_parser.add_argument("filename", nargs='+', help="The target file")
+rm_parser.set_defaults(func=rm)
+
+ls_parser = subparsers.add_parser("ls", help="List dotfiles")
+ls_parser.set_defaults(func=ls)
+
+def main():
+    ns = parser.parse_args()
+
+    if not getattr(ns, "func", None):
+        parser.print_help()
+        raise SystemExit
+    else:
+        ns.func(ns)
+
+if __name__ == "__main__":
+    main()
