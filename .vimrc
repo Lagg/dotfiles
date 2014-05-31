@@ -107,9 +107,3 @@ else
   set autoindent
 
 endif
-
-" Command to compare your edits to a file since you last saved it
-if !exists(":DiffOrig")
-  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
-		  \ | wincmd p | diffthis
-endif
