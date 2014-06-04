@@ -94,7 +94,7 @@ if has("autocmd")
   autocmd BufRead,BufNewFile *.gv set filetype=dot
 
   " For systemd and mysql files
-  autocmd BufRead,BufNewFile *.service,*.socket,*.target,my.cnf,.my.cnf set filetype=dosini
+  autocmd BufRead,BufNewFile *.service,*.socket,*.target,my.cnf,.my.cnf,*.network,*.link set filetype=dosini
 
   " Markdown
   autocmd BufRead,BufNewFile *.md set filetype=markdown
