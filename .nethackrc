@@ -1,5 +1,5 @@
 # Controls
-OPTIONS=number_pad
+OPTIONS=number_pad, rest_on_space
 
 # Pets
 OPTIONS=pettype:c
@@ -8,5 +8,5 @@ OPTIONS=pettype:c
 OPTIONS=pickup_burden:unencumbered, pickup_types:"*=+()[$!?/
 
 # Display
-OPTIONS=color, runmode:walk, time
+OPTIONS=color, runmode:walk, time, standout
 
