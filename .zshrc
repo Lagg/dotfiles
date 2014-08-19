@@ -28,4 +28,8 @@ export EDITOR="vim"
 export VISUAL="$EDITOR"
 export BROWSER="w3m"
 export GPG_TTY=$(tty)
-export TERM=xterm-256color
+
+# Don't set TERM if it's a screen forked shell (term is already specified in screenrc)
+if test -z "$STY"; then
+    export TERM=xterm-256color
+fi
