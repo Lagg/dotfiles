@@ -20,6 +20,7 @@ alias ls="ls --all --color=always"
 alias pstree="pstree -p -l"
 alias less="less -R"
 alias htop="env TERM=xterm htop"
+alias info="info --vi-keys"
 
 export PAGER="less"
 export PATH="$PATH:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin:/usr/local/games:/usr/games"
