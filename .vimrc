@@ -47,6 +47,7 @@ if has("gui_running")
   set guioptions-=T
   set guioptions-=r
   set guioptions-=m
+  set guioptions-=l
 
   " Nice defaults for positions and size
   set lines=50
