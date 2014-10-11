@@ -21,6 +21,7 @@ set ignorecase          " case insensitivity in searches
 set smartcase           " ... unless it looks like I don't want that
 set shortmess+=I        " Start screen is distracting
 set omnifunc=syntaxcomplete#Complete " Fancy completion
+set visualbell t_vb=    " Disable visual bell, flashing looks bad in videos and isn't usually needed
 
 " Proper swap file dirs instead of pooping them out in the pwd
 " and yes I know Windows huhu but my job takes me everywhere
