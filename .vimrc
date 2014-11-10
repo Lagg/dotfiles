@@ -37,7 +37,7 @@ set statusline=%t[%{strlen(&fenc)?&fenc:'none'},%{&ff}]%h%m%r%y%=%c,%l/%L\ %P
 
 " Theme, syntax highlighting, and highlighted search for color terms
 if &t_Co > 2 || has("gui_running")
-  colorscheme elflord
+  silent! colorscheme elflord
   syntax on
   set hlsearch
 endif
