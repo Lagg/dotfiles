@@ -39,7 +39,7 @@ def get_dotfiles():
     return sorted(files)
 
 def sync(args):
-    subprocess.call(["git", "pull"], stdout=subprocess.DEVNULL)
+    subprocess.call(["git", "pull"], stdout=open(os.devnull, "w"))
     files = get_dotfiles()
 
     for fname in files:
