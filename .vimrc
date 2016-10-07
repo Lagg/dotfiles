@@ -23,7 +23,12 @@ set shortmess+=I        " Start screen is distracting
 set omnifunc=syntaxcomplete#Complete " Fancy completion
 set visualbell t_vb=    " Disable visual bell, flashing looks bad in videos and isn't usually needed
 set encoding=utf-8      " I'm ready.
-set clipboard=unnamed   " Dem shared clipboard buffers
+
+if has("unnamedplus")
+    set clipboard=unnamedplus   " Dem shared clipboard buffers
+else
+    set clipboard=unnamed " For Windows(TM)
+endif
 
 " Proper swap file dirs instead of pooping them out in the pwd
 " and yes I know Windows huhu but my job takes me everywhere
