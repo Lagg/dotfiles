@@ -23,6 +23,7 @@ set shortmess+=I        " Start screen is distracting
 set omnifunc=syntaxcomplete#Complete " Fancy completion
 set visualbell t_vb=    " Disable visual bell, flashing looks bad in videos and isn't usually needed
 set encoding=utf-8      " I'm ready.
+set clipboard=unnamed   " Dem shared clipboard buffers
 
 " Proper swap file dirs instead of pooping them out in the pwd
 " and yes I know Windows huhu but my job takes me everywhere
@@ -60,9 +61,6 @@ if has("gui_running")
   if has("gui_win32")
     set guifont=Consolas:h9:cDEFAULT
   endif
-
-  " Use clipboard register in any yank/put operations with * prefix
-  set clipboard=unnamed
 
 endif
 
