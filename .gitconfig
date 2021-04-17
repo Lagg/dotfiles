@@ -7,7 +7,9 @@
 	default = simple
 [apply]
 	whitespace = fix
+[diff]
+	algorithm = histogram
 [alias]
-	l = log --decorate --graph --all --pretty --notes
-	d = diff --minimal
-	dc = diff --minimal --cached
+	l = log --decorate=auto --graph --all --pretty --notes
+	d = diff
+	dc = diff --cached
