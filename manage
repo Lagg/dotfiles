@@ -15,7 +15,44 @@ subcmd="${argv[0]}"
 if test -z $cmd; then cmd="null"; fi
 if test -z $subcmd; then subcmd="null"; fi
 
+function add_tracked_file() {
+    file=$1
+    if test ! -e $file; then
+	echoe "$file: No such file" && return 1;
+    else
+	trackedFile=./$(basename $file)
+
+        # NOTE: DESTRUCTIVE
+        mv -v $(realpath $file) $trackedFile
+        git add --verbose $trackedFile
+    fi
+}
+
+function clean_orphaned_symlinks() {
+    # This is some arcane looking shit
+    # but it's mostly implicitly telling find
+    # to return broken symlinks (because it only
+    # recognizes it's a symlink if it's broken with -L enabled)
+
+    echoe -e "Cleaning orphaned dotfiles...\n"
+
+    for brokenLink in $(find -L ~ -type l); do
+        brokenPath=$(realpath -m $brokenLink)
+
+        # Make doubly sure it's broken and only mess with our own broken stuff
+        if ! test -e $brokenLink && test $(dirname $brokenPath) = $(pwd); then
+            echo "$brokenLink ($brokenPath) is orphan"
+            # NOTE: DESTRUCTIVE
+            rm -v $brokenLink
+        fi
+    done
+
+    echoe
+}
+
 function symlink_tracked_files() {
+    echoe -e "Symlinking managed dotfiles\n"
+
     for file in $(get_tracked_files); do
 	linkname=~/$(basename $file)
 
@@ -41,19 +78,8 @@ function symlink_tracked_files() {
             ln -s -v $(realpath $file) $linkname
 	fi
     done
-}
 
-function add_tracked_file() {
-    file=$1
-    if test ! -e $file; then
-	echoe "$file: No such file" && return 1;
-    else
-	trackedFile=./$(basename $file)
-
-        # NOTE: DESTRUCTIVE
-        mv -v $(realpath $file) $trackedFile
-        git add --verbose $trackedFile
-    fi
+    echoe
 }
 
 function untrack_file() {
@@ -124,9 +150,10 @@ elif test $subcmd = $CMD_COLORTEST; then
     truecolor_test
 elif test $subcmd = $CMD_SYNC; then
     if git pull; then
-	symlink_tracked_files;
+        symlink_tracked_files
+        clean_orphaned_symlinks
     else
-	echoe "Pull error"
+        echoe "Pull error"
     fi
 elif test $subcmd = $CMD_ADD;  then
     for file in ${argv[@]:1}; do
