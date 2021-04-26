@@ -41,7 +41,7 @@ function clean_orphaned_symlinks() {
 
         # Make doubly sure it's broken and only mess with our own broken stuff
         if ! test -e $brokenLink && test $(dirname $brokenPath) = $(pwd); then
-            echo "$brokenLink ($brokenPath) is orphan"
+            echoe "$brokenLink ($brokenPath) is orphan"
             # NOTE: DESTRUCTIVE
             rm -v $brokenLink
         fi
@@ -129,6 +129,8 @@ function commit_reminder() {
 
 function truecolor_test() {
     # From https://gist.github.com/XVilka/8346728
+    echoe -e "Truecolor test\n"
+
     awk -v term_cols="${width:-$(tput cols || echo 80)}" 'BEGIN{
     s="/\\";
     for (colnum = 0; colnum<term_cols; colnum++) {
@@ -142,11 +144,53 @@ function truecolor_test() {
 	}
     printf "\n";
     }'
+
+    echo -e "\x1b[0m"
+}
+
+function bytecolor_test() {
+    # From https://gist.github.com/HaleTom/89ffe32783f89f403bba96bd7bcd1263
+    echoe -e "Bytecolor test\n"
+
+    for i in {0..255} ; do
+        printf "\x1b[38;5;${i}m%3d " "${i}"
+        if (( $i == 15 )) || (( $i > 15 )) && (( ($i-15) % 12 == 0 )); then
+            echo;
+        fi
+    done
+
+    # Reset term stuff
+    echo -e "\x1b[0m"
+}
+
+function codecolor_test() {
+    # From Lagg
+    echoe -e "Codecolor test\n"
+
+    # Foreground
+    for i in {30..37}; do
+        echo -en "\x1b[${i}m${i} "
+    done
+    echo -e "\x1b[0m\n"
+
+    # Background
+    for i in {40..47}; do
+        echo -en "\x1b[${i}m${i} "
+    done
+    echo -e "\x1b[0m\n"
+
+    # Bright foreground
+    for i in {90..97}; do
+        echo -en "\x1b[${i}m${i} "
+    done
+    echo -e "\x1b[0m\n"
 }
 
 if test $subcmd = $CMD_LS; then
     get_tracked_files
 elif test $subcmd = $CMD_COLORTEST; then
+    codecolor_test
+    bytecolor_test
     truecolor_test
 elif test $subcmd = $CMD_SYNC; then
     if git pull; then
