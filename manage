@@ -129,7 +129,7 @@ function commit_reminder() {
 
 function truecolor_test() {
     # From https://gist.github.com/XVilka/8346728
-    echoe -e "Truecolor test\n"
+    echoe -e "Truecolor test\n------\n"
 
     awk -v term_cols="${width:-$(tput cols || echo 80)}" 'BEGIN{
     s="/\\";
@@ -145,52 +145,51 @@ function truecolor_test() {
     printf "\n";
     }'
 
-    echo -e "\x1b[0m"
+    echo -en "\x1b[0m"
 }
 
 function bytecolor_test() {
     # From https://gist.github.com/HaleTom/89ffe32783f89f403bba96bd7bcd1263
-    echoe -e "Bytecolor test\n"
+    # Modified by Lagg to not be so awkward about the nibblerow
+    echoe -e "Bytecolor test\n------\n"
 
     for i in {0..255} ; do
-        printf "\x1b[38;5;${i}m%3d " "${i}"
-        if (( $i == 15 )) || (( $i > 15 )) && (( ($i-15) % 12 == 0 )); then
-            echo;
-        fi
+        if (($i % 16 == 0)); then echo; fi
+        printf "\x1b[38;5;${i}m%03d " "${i}"
     done
-
-    # Reset term stuff
     echo -e "\x1b[0m"
 }
 
 function codecolor_test() {
     # From Lagg
-    echoe -e "Codecolor test\n"
+    echoe -e "Codecolor test\n------\n"
 
     # Foreground
     for i in {30..37}; do
-        echo -en "\x1b[${i}m${i} "
+        printf "\x1b[${i}m%03d " "$i"
     done
-    echo -e "\x1b[0m\n"
+    echo -e "\x1b[0m"
 
     # Background
     for i in {40..47}; do
-        echo -en "\x1b[${i}m${i} "
+        printf "\x1b[${i}m%03d " "$i"
     done
-    echo -e "\x1b[0m\n"
+    echo -e "\x1b[0m"
 
     # Bright foreground
     for i in {90..97}; do
-        echo -en "\x1b[${i}m${i} "
+        printf "\x1b[${i}m%03d " "$i"
     done
-    echo -e "\x1b[0m\n"
+    echo -e "\x1b[0m"
 }
 
 if test $subcmd = $CMD_LS; then
     get_tracked_files
 elif test $subcmd = $CMD_COLORTEST; then
     codecolor_test
+    echoe
     bytecolor_test
+    echoe
     truecolor_test
 elif test $subcmd = $CMD_SYNC; then
     if git pull; then
