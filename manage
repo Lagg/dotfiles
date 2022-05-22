@@ -8,6 +8,8 @@ CMD_COLORTEST="color-check"
 
 CMDS=($CMD_LS $CMD_SYNC $CMD_ADD $CMD_RM $CMD_COLORTEST)
 
+SYNC_EXCLUDE="^README.md$\|^$(basename $0)$"
+
 argv=($@)
 cmd=$0
 subcmd="${argv[0]}"
@@ -92,8 +94,7 @@ function untrack_file() {
 
 function get_tracked_files() {
     # Skip manage script and project stuff
-    ignored="\.git.\+\|README\.md"
-    git ls-files|grep -v "$ignored"|grep -v $(basename $cmd)
+    git ls-files|grep -v $SYNC_EXCLUDE
 }
 
 function filter_untracked_files() {
