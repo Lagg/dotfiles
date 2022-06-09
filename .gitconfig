@@ -13,3 +13,5 @@
 	l = log --decorate=auto --graph --all --pretty --notes
 	d = diff
 	dc = diff --cached
+[init]
+	defaultBranch = master
